@@ -171,10 +171,14 @@ void sessionLoop() {
       // Gallery HTML is generated on-demand by the web server, and the QR is
       // built when we show the result screen — so there is nothing heavy to do
       // here beyond transitioning.
-      webServerSetActiveSession(g_session_id);  // captive portal lands here
+      webServerSetActiveSession(g_session_id);  // "/" lands on this gallery
       if (cloudReady())  // public https gallery when the booth is online
         cloudUploadSession(g_session_id, g_shot_index);
       uiShowResult(g_session_id, g_shot_index);
+      // Auto-print when the printer link is already up; the Print button
+      // stays available for reprints (or if the printer was off just now).
+      if (printerConnected() && !printerBusy())
+        printerStartJob(g_session_id, g_shot_index);
       g_result_start = now;
       g_state = ST_RESULT;
       break;

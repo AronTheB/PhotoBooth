@@ -443,7 +443,7 @@ static void doJobLinked() {
 
   int printed = 0;
   for (int i = 1; i <= s_count; ++i) {
-    setStatus("Printing %d/%d...", i, (int)s_count);
+    setStatus("Printing %d/%d - wait 10-20 s...", i, (int)s_count);
     size_t len = loadPhoto(i);
     if (len == 0 || !decodePhoto(len)) {
       Serial.printf("[print] photo %d load/decode failed\n", i);
@@ -466,33 +466,21 @@ static void doJobLinked() {
 }
 
 static void printTask(void*) {
-  // Connect right after boot (quietly) so the first print starts instantly,
-  // then keep the link alive with a backoff watchdog.
+  // One connect attempt at power-on so the first print starts instantly.
+  // After that BLE stays completely quiet — no idle scans (they were
+  // corrupting the 2 Mbaud camera link) — until a print job needs the
+  // printer, at which point doJob() connects on demand.
   vTaskDelay(pdMS_TO_TICKS(2500));  // let the display/AP/session settle first
-  uint32_t backoff = 5000;
-  uint32_t next_try = millis();
+  if (bleEnsure(false)) Serial.println("[print] link up (standby)");
   for (;;) {
-    if (ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(2000)) > 0) {
-      s_busy = true;
-      doJob();
-      s_busy = false;
-      // Let the result message sit for a bit, then clear (unless a new job
-      // started meanwhile).
-      vTaskDelay(pdMS_TO_TICKS(5000));
-      if (!s_busy) s_status[0] = '\0';
-      continue;
-    }
-    // Idle tick: (re)connect quietly if the link is down, with backoff so a
-    // powered-off printer doesn't keep yanking the WiFi AP for scans.
-    if (!printerLinked() && (int32_t)(millis() - next_try) >= 0) {
-      if (bleEnsure(false)) {
-        backoff = 5000;
-        Serial.println("[print] link up (standby)");
-      } else {
-        backoff = backoff < 120000 ? backoff * 2 : 120000;
-      }
-      next_try = millis() + backoff;
-    }
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    s_busy = true;
+    doJob();
+    s_busy = false;
+    // Let the result message sit for a bit, then clear (unless a new job
+    // started meanwhile).
+    vTaskDelay(pdMS_TO_TICKS(5000));
+    if (!s_busy) s_status[0] = '\0';
   }
 }
 
@@ -508,6 +496,8 @@ void printerBegin() {
 }
 
 bool printerBusy() { return s_busy; }
+
+bool printerConnected() { return printerLinked(); }
 
 const char* printerStatus() { return s_status; }
 

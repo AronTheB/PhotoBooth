@@ -20,7 +20,7 @@
 // UART is good to 5 Mbps; the limit in practice is wiring — keep the link
 // wires short with a solid common ground. If the bad-CRC counter on the
 // diag bar climbs, step down: 2000000 -> 1500000 -> 1000000.
-#define UART_BAUD 2000000
+#define UART_BAUD 1000000
 
 // ---- VIEWE (main node) UART pins --------------------------------------------
 // !! OPEN ITEM (build plan §2 / §11) !!
@@ -105,7 +105,7 @@
 #define FLASH_MS 200           // white flash duration at capture
 #define CAPTURE_TIMEOUT_MS 3000  // wait for CAPTURE_FRAME before retrying
 #define CAPTURE_RETRIES 3      // give up (and abort session) after this many
-#define RESULT_TIMEOUT_S 60    // result screen auto-returns to IDLE after this
+#define RESULT_TIMEOUT_S 180   // result screen auto-returns to IDLE after this
 
 // Allowed shot-count choices offered on the idle screen.
 #define SHOT_COUNTS \
@@ -149,7 +149,9 @@
 // becomes a normal https link guests open on their own mobile data — nobody
 // joins the booth WiFi. Leave STA_SSID empty to disable; the booth then
 // falls back to the local-AP gallery automatically.
-#define STA_SSID "VankeYunCheng"
-#define STA_PASSWORD "SJGS6666"
+// Cloud disabled ("" = local QR mode only). To re-enable, put the WiFi name
+// back, e.g. "VankeYunCheng"/"SJGS6666" or the "iPhone" hotspot.
+#define STA_SSID ""
+#define STA_PASSWORD ""
 #define CLOUD_BASE_URL "https://photobooth.arontheb.workers.dev"  // no trailing /
 #define CLOUD_UPLOAD_KEY "random_key_67"   // the same UPLOAD_KEY value

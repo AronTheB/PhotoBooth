@@ -436,7 +436,7 @@ static void buildResultScreen() {
   lv_obj_set_size(print, 210, 64);
   lv_obj_align(print, LV_ALIGN_BOTTOM_MID, -115, -16);
   lv_obj_set_style_radius(print, 32, 0);
-  lv_obj_set_style_bg_color(print, lv_color_hex(0x2B2B36), 0);
+  lv_obj_set_style_bg_color(print, COL_ACCENT, 0);
   lv_obj_set_style_shadow_width(print, 16, 0);
   lv_obj_set_style_shadow_opa(print, LV_OPA_30, 0);
   lv_obj_add_event_cb(print, printBtnCb, LV_EVENT_CLICKED, nullptr);

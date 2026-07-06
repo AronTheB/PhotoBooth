@@ -38,6 +38,10 @@ void setup() {
                 VIEWE_UART_RX_PIN, VIEWE_UART_TX_PIN, UART_BAUD);
 
   Link.begin(UART_BAUD, SERIAL_8N1, VIEWE_UART_RX_PIN, VIEWE_UART_TX_PIN);
+  // Same RX FIFO-full threshold as the real app (see uart_link.cpp): the
+  // core's default of 120/128 leaves only ~80 us of ISR-latency headroom
+  // at 1 Mbaud before the driver drops the FIFO on overflow.
+  Link.setRxFIFOFull(8);
   g_parser.begin();
   g_parser.onFrame(onFrame);
 }

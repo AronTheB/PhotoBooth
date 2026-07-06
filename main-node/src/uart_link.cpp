@@ -97,6 +97,13 @@ void uartLinkBegin() {
 
   Link.setRxBufferSize(32 * 1024);  // room to absorb a full-res still burst
   Link.begin(UART_BAUD, SERIAL_8N1, VIEWE_UART_RX_PIN, VIEWE_UART_TX_PIN);
+  // At >57600 baud the Arduino core arms the RX FIFO-full interrupt at 120 of
+  // the 128-byte hardware FIFO, i.e. 8 byte-times (~80 us at 1 Mbaud) of
+  // interrupt-latency headroom before UART_FIFO_OVF wipes the FIFO. WiFi/BLE/
+  // LVGL routinely delay the ISR longer than that, corrupting whichever frame
+  // is in flight. Fire at 8 bytes instead: ~1.2 ms of headroom, and the 32 KB
+  // ring buffer absorbs the rest. Must be called AFTER begin() to take effect.
+  Link.setRxFIFOFull(8);
 
   g_parser.begin();
   g_parser.onFrame(onFrame);

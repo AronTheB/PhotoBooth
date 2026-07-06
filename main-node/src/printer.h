@@ -20,6 +20,9 @@ void printerBegin();
 // True while a job (connect/decode/print) is running.
 bool printerBusy();
 
+// True when the BLE link to the printer is up (job or standby).
+bool printerConnected();
+
 // Short status line for the UI ("" when idle). Latched result messages
 // ("Print done" / "Printer not found") clear themselves after a few seconds.
 const char* printerStatus();

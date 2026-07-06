@@ -59,5 +59,23 @@ void loop() {
   sessionLoop();       // advance the session state machine
   webServerLoop();     // service any pending HTTP client
 
+  // Link-quality heartbeat: one line every 2 s while frames flow, so a serial
+  // capture shows the CRC error rate and how it correlates with BLE/WiFi
+  // activity (diagnosing the "1/3 of frames bad" corruption).
+  static uint32_t s_stat_ms = 0;
+  static uint32_t s_last_ok = 0, s_last_bad = 0;
+  if (millis() - s_stat_ms >= 2000) {
+    s_stat_ms = millis();
+    uint32_t ok = uartFramesOk(), bad = uartFramesBadCrc();
+    if (ok != s_last_ok || bad != s_last_bad) {
+      Serial.printf("[link] ok=%lu (+%lu) badCRC=%lu (+%lu) rx=%lu KB\n",
+                    (unsigned long)ok, (unsigned long)(ok - s_last_ok),
+                    (unsigned long)bad, (unsigned long)(bad - s_last_bad),
+                    (unsigned long)(uartBytesRx() / 1024));
+      s_last_ok = ok;
+      s_last_bad = bad;
+    }
+  }
+
   delay(2);  // keep the loop tight but yield to the idle/WiFi tasks
 }
