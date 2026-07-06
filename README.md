@@ -2,6 +2,9 @@
 
 ## A ESP32 Based photo booth made for the HackClub Fallout Hackathon by the Soup Soup Soup Sahur team
 
+<img width="1410" height="2000" alt="Poster" src="https://github.com/user-attachments/assets/5589d2b2-eac0-4807-84c0-c07689d05a8b" />
+
+
 ## Description
 
 **Why we made this:** The theme for the hackathon was that the world is ending and we need to create a cool project. We made the photo booth, because we want this event to be remembered by aliens if they come to earth after everyone died.
