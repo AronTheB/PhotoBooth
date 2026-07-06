@@ -1,0 +1,8 @@
+{
+  "name": "photobooth",
+  "version": "1.0.0",
+  "description": "Shared UART wire protocol (framing + CRC32) and config for the ESP32 photo booth. Included by both the camera-node (XIAO) and main-node (VIEWE) projects via lib_extra_dirs = ../shared.",
+  "keywords": ["uart", "protocol", "esp32", "photobooth"],
+  "frameworks": ["arduino"],
+  "platforms": ["espressif32"]
+}

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(~/.platformio/penv/Scripts/pio.exe device *)",
+      "Bash(pio device *)",
+      "Bash(~/.platformio/penv/Scripts/pio.exe run *)"
+    ]
+  }
+}
